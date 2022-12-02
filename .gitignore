@@ -137,3 +137,6 @@ data/*.db
 
 #VScode
 .vscode/
+
+#models
+Models/*.pkl

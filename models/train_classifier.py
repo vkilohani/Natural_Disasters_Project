@@ -1,41 +1,108 @@
-import sys
+import sys, os, time, joblib
+sys.path.append(os.getcwd())
+from utils.custom_utils import full_data_path, full_models_path
+
+import numpy as np
+import pandas as pd
+from sqlalchemy import create_engine
+
+import re
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
+
+import string
+from custom_classifier import MyClassifier, build_model
 
 
 def load_data(database_filepath):
-    pass
+    """Loads data from database_filepath
+    args: 
+    - database_filepath: name of disaster database
+    returns:
+    - X, y dataframe from the disaster database
+    """
+    engine = create_engine('sqlite:///'
+                           + full_data_path(database_filepath)
+                           )
+    df = pd.read_sql(full_data_path(database_filepath), engine)
+    
+    #Convert all column names to string so we can pass to the 
+    #ColumnTransformer() that requires string column names
+    df.columns = [str(x) for x in df.columns.values]    
+    
+    X_df = df[["message", "genre"]]
+    y_df = df.drop(["id", "message", "original", "genre"], axis=1)
+    
+    return df["message"], y_df
+    
 
 
-def tokenize(text):
-    pass
+def create_categories(y_df):
+    """Get a list of all categories and categories with missing classes
+    as a tuple
+    args:
+    - labels dataframe
+    returns:
+    - tuple: (all categories, labels with missing classes)
+    """
+    unique_vals = y_df.nunique()
+    output_categories = y_df.columns.values
+    drop_cols = unique_vals[unique_vals==1].index.values.tolist()
+    
+    return output_categories, drop_cols
+    
+    
 
-
-def build_model():
-    pass
-
-
-def evaluate_model(model, X_test, Y_test, category_names):
-    pass
+def evaluate_model(model, X_df, y_df):
+    """
+    Evaluate the model
+    args:
+    - feature dataframe
+    - labels dataframe
+    - model
+    returns: Nothing
+    Prints the evaluation of the model on the test set
+    """
+    
+    y_pred = model.predict(X_df).values
+    y_actual = y_df.values
+    output_categories = y_df.columns.values
+    
+    for i in range(y_actual.shape[1]):
+        cf_report = classification_report(y_actual[:,i] , y_pred[:,i])
+        metrics_col = cf_report
+        print(output_categories[i], ":\n")
+        print(cf_report.split('\n')[3].split()[1:4])
 
 
 def save_model(model, model_filepath):
-    pass
+    """Exports the model to a classifier pickle file
+    args: 
+    - model (to be exported)
+    - model_filepath (string)
+    returns: Nothing
+    """
+    joblib.dump(model, full_models_path(model_filepath))
+
 
 
 def main():
     if len(sys.argv) == 3:
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
-        X, Y, category_names = load_data(database_filepath)
-        X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
+        X_df, y_df = load_data(database_filepath)
+        X_train, X_test, y_train, y_test = train_test_split(X_df, y_df, test_size=0.2)
+        
+        output_categories, drop_cols = create_categories(y_df)
         
         print('Building model...')
-        model = build_model()
+        model = build_model(output_categories, drop_cols)
         
         print('Training model...')
-        model.fit(X_train, Y_train)
+        model.fit(X_train, y_train)
         
         print('Evaluating model...')
-        evaluate_model(model, X_test, Y_test, category_names)
+        evaluate_model(model, X_test, y_test)
 
         print('Saving model...\n    MODEL: {}'.format(model_filepath))
         save_model(model, model_filepath)

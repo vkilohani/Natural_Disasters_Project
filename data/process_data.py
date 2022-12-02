@@ -1,17 +1,8 @@
-import os, sys, time
-import numpy as np
+import sys, os
+sys.path.append(os.getcwd())
+from utils.custom_utils import full_data_path
 import pandas as pd
 from sqlalchemy import create_engine
-
-
-def full_data_path(filename):
-    """Gets full path of the files in the data folder
-    args:
-    - filename
-    returns:
-    full path of the filename on the system
-    """
-    return os.path.join(os.getcwd(), 'data', filename)
 
 def load_data(messages_filepath, categories_filepath):
     """Loads data from categories_filepath

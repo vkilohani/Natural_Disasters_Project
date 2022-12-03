@@ -93,7 +93,7 @@ def build_model(output_categories, drop_cols):
     
     
     parameters = {
-        'vect__ngram_range': [(1, 1)],
+        'vect__ngram_range': [(1, 1), (1, 2), (1, 3)],
         #'clf__estimator__clf3__n_estimators': [50, 100, 200],
         #'clf__estimator__estimators__clf3__min_samples_split': [2, 3, 4],
         #'clf__estimator__estimators__clf1__C': [0.1, 1.0]

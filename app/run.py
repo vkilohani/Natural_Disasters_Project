@@ -1,3 +1,7 @@
+import os, sys
+sys.path.append('..')
+from models.custom_classifier import MyClassifier, build_model
+
 import json
 import plotly
 import pandas as pd
@@ -8,7 +12,7 @@ from nltk.tokenize import word_tokenize
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
-from sklearn.externals import joblib
+import joblib
 from sqlalchemy import create_engine
 
 
@@ -26,11 +30,13 @@ def tokenize(text):
     return clean_tokens
 
 # load data
-engine = create_engine('sqlite:///../data/YourDatabaseName.db')
-df = pd.read_sql_table('YourTableName', engine)
+database_filepath = os.path.abspath("../data/DisasterResponse.db")
+engine = create_engine('sqlite:///'+database_filepath)
+df = pd.read_sql(database_filepath, engine)
 
 # load model
-model = joblib.load("../models/your_model_name.pkl")
+model_filepath = os.path.abspath("../models/classifier.pkl")
+model = joblib.load(model_filepath)
 
 
 # index webpage displays cool visuals and receives user input text for model
@@ -40,13 +46,17 @@ def index():
     
     # extract data needed for visuals
     # TODO: Below is an example - modify to extract data for your own visuals
+    counts = df.iloc[:, 4:-1].sum().sort_values(ascending=True)
+    names = counts.index
+    numbers = counts.values
+    
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
-        {
+                {
             'data': [
                 Bar(
                     x=genre_names,
@@ -63,8 +73,36 @@ def index():
                     'title': "Genre"
                 }
             }
+        },   
+        {
+            'data': [
+                Bar(
+                    x=numbers,
+                    y=names,
+                    orientation = 'h',
+                    width = 0.8
+                )
+            ],
+
+            'layout': {
+                'title': 'Incidence Count Bar Chart',
+                'yaxis': {
+                    'title': {'text': "Disaster category",
+                              'standoff': 200
+                    }           
+                },
+                'xaxis': {
+                    'title': "Incidences"
+                },
+                'bargap': 1,
+                'height': 900,
+                'width': 1200,
+                'margin': {'l':150, 'r': 100, 'b':200, 't':100},
+                'separators': ','
+            }
         }
     ]
+    
     
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
@@ -81,7 +119,7 @@ def go():
     query = request.args.get('query', '') 
 
     # use model to predict classification for query
-    classification_labels = model.predict([query])[0]
+    classification_labels = model.predict([query]).values[0]
     classification_results = dict(zip(df.columns[4:], classification_labels))
 
     # This will render the go.html Please see that file. 

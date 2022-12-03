@@ -11,7 +11,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 
 import string
-from custom_classifier import MyClassifier, build_model
+from models.custom_classifier import MyClassifier, build_model
 
 
 def load_data(database_filepath):

@@ -1,13 +1,8 @@
 import os, sys
 sys.path.append('..')
-from models.custom_classifier import MyClassifier, build_model
-
 import json
 import plotly
 import pandas as pd
-
-from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import word_tokenize
 
 from flask import Flask
 from flask import render_template, request, jsonify
@@ -15,19 +10,18 @@ from plotly.graph_objs import Bar
 import joblib
 from sqlalchemy import create_engine
 
+def full_data_path(filename):
+    """Gets full path of the files in the given folder
+    args:
+    - filename
+    returns:
+    full path of the filename on the system
+    """
+    root_dir = os.path.abspath('..')
+    return os.path.join(root_dir, 'data', filename)
 
 app = Flask(__name__)
 
-def tokenize(text):
-    tokens = word_tokenize(text)
-    lemmatizer = WordNetLemmatizer()
-
-    clean_tokens = []
-    for tok in tokens:
-        clean_tok = lemmatizer.lemmatize(tok).lower().strip()
-        clean_tokens.append(clean_tok)
-
-    return clean_tokens
 
 # load data
 database_filepath = os.path.abspath("../data/DisasterResponse.db")
@@ -119,7 +113,7 @@ def go():
     query = request.args.get('query', '') 
 
     # use model to predict classification for query
-    classification_labels = model.predict([query]).values[0]
+    classification_labels = model.predict(pd.Series([query])).values[0]
     classification_results = dict(zip(df.columns[4:], classification_labels))
 
     # This will render the go.html Please see that file. 

@@ -11,7 +11,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 
 import string
-from models.custom_classifier import MyClassifier, build_model
+from models.pipeline import build_model
+
+import nltk
+nltk.download(['punkt', 'wordnet', 'omw-1.4'])
+
 
 
 def load_data(database_filepath):
@@ -30,10 +34,10 @@ def load_data(database_filepath):
     #ColumnTransformer() that requires string column names
     df.columns = [str(x) for x in df.columns.values]    
     
-    X_df = df[["message", "genre"]]
+    X_df = df["message"]
     y_df = df.drop(["id", "message", "original", "genre"], axis=1)
     
-    return df["message"], y_df
+    return X_df, y_df
     
 
 

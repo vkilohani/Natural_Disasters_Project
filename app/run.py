@@ -1,5 +1,5 @@
 import os, sys
-sys.path.append('..')
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import json
 import plotly
 import pandas as pd
@@ -9,16 +9,6 @@ from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
 import joblib
 from sqlalchemy import create_engine
-
-def full_data_path(filename):
-    """Gets full path of the files in the given folder
-    args:
-    - filename
-    returns:
-    full path of the filename on the system
-    """
-    root_dir = os.path.abspath('..')
-    return os.path.join(root_dir, 'data', filename)
 
 app = Flask(__name__)
 

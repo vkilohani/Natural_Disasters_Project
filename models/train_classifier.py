@@ -1,5 +1,5 @@
 import sys, os, time, joblib
-sys.path.append(os.getcwd())
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from utils.custom_utils import full_data_path, full_models_path
 
 import numpy as np
@@ -15,7 +15,6 @@ from models.pipeline import build_model
 
 import nltk
 nltk.download(['punkt', 'wordnet', 'omw-1.4'])
-
 
 
 def load_data(database_filepath):
@@ -102,8 +101,14 @@ def main():
         print('Building model...')
         model = build_model(output_categories, drop_cols)
         
+        start = time.time()
         print('Training model...')
         model.fit(X_train, y_train)
+        end = time.time()
+        
+        duration = end-start
+        print("Time taken to train the model: {}m and {:.1f}s".format(
+            duration//60, duration%60))
         
         print('Evaluating model...')
         evaluate_model(model, X_test, y_test)

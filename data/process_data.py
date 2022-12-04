@@ -1,5 +1,5 @@
 import sys, os
-sys.path.append(os.getcwd())
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from utils.custom_utils import full_data_path
 import pandas as pd
 from sqlalchemy import create_engine

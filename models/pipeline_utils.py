@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
-import nltk
 from nltk.tokenize import word_tokenize
 """
-Uncomment the following line if the packages are absent
+Uncomment the following two lines if the packages are absent
 """
+#import nltk
 #nltk.download(['punkt', 'wordnet', 'omw-1.4'])
 from nltk.stem import WordNetLemmatizer
 

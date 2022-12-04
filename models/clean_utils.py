@@ -1,5 +1,4 @@
 from deep_translator import GoogleTranslator
-from nltk.stem import WordNetLemmatizer
 import re
 import spacy
 import pandas as pd

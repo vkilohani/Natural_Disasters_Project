@@ -9,12 +9,7 @@ from sklearn.svm import LinearSVC
 
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.compose import ColumnTransformer
-from sklearn.model_selection import RandomizedSearchCV
 from sklearn.model_selection import GridSearchCV
-
-from sklearn.metrics import fbeta_score, make_scorer
-from sklearn.metrics import precision_score
-from sklearn.metrics import recall_score, accuracy_score
 
 from sklearn.preprocessing import FunctionTransformer, MinMaxScaler
 
@@ -28,9 +23,6 @@ def build_model(output_categories, drop_cols):
     returns:
     - grid search pipeline object
     """
-
-    f1_scorer = make_scorer(fbeta_score, beta=1, greater_is_better=True, labels = ['1'], average = 'samples', zero_division = 0)
-
     
     estimators = [('clf1', LogisticRegression(class_weight='balanced',
                                        max_iter=10000)),
@@ -68,14 +60,14 @@ def build_model(output_categories, drop_cols):
             ])
       
     parameters = {
-        'col_tfr__vect__ngram_range': [(1, 1), (1, 2),(2, 3), (3, 4)],
-        'clf__subestimator__estimator__clf2__C': [0.1, 1.0, 5.0],
+        'col_tfr__vect__ngram_range': [(1, 1)],
+        #'clf__subestimator__estimator__clf2__C': [0.1, 1.0, 5.0],
     }
     
     cv = GridSearchCV(
                     estimator = my_pipeline, 
                     param_grid=parameters,
-                    scoring = 'f1_samples', #f1_scorer 
+                    scoring = 'f1_samples',
                     cv=4,
                     refit=True,
                     n_jobs=-1

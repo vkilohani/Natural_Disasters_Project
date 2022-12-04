@@ -1,5 +1,7 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+from sklearn.multioutput import MultiOutputClassifier
+from sklearn.ensemble import VotingClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
@@ -30,13 +32,16 @@ def build_model(output_categories, drop_cols):
     f1_scorer = make_scorer(fbeta_score, beta=1, greater_is_better=True, labels = ['1'], average = 'samples', zero_division = 0)
 
     
-    estimators = [#('clf1', LogisticRegression(class_weight='balanced',
-                   #                    max_iter=10000)),
-              #('clf2', LinearSVC(class_weight='balanced')),
-              ('clf3', AdaBoostClassifier())
+    estimators = [('clf1', LogisticRegression(class_weight='balanced',
+                                       max_iter=10000)),
+              ('clf2', LinearSVC(class_weight='balanced', max_iter=10000)),
+              #('clf3', AdaBoostClassifier())
               ]
+    
+    subestimator = MultiOutputClassifier(VotingClassifier(
+                             estimators=estimators), n_jobs = 1)
 
-    clf = MyClassifier(output_categories, drop_cols, estimators)
+    clf = MyClassifier(output_categories, drop_cols, subestimator)
     
     col_tfr = ColumnTransformer(
                                 [("vect", 
@@ -45,7 +50,7 @@ def build_model(output_categories, drop_cols):
                                 )
 
     my_pipeline = Pipeline([
-                ('cleanup', FunctionTransformer(custom_cleanup)),
+                #('cleanup', FunctionTransformer(custom_cleanup)),
                 ('f_union', 
                     FeatureUnion([
                         ('trivial', 
@@ -63,9 +68,8 @@ def build_model(output_categories, drop_cols):
             ])
       
     parameters = {
-        'col_tfr__vect__ngram_range': [(1, 2), (2, 3), (2, 4)],
-        #'clf__estimators__estimator__clf3__n_estimators': [100, 200],
-        #'clf__estimators__estimator__clf1__C': [0.1, 1.0, 5.0],
+        'col_tfr__vect__ngram_range': [(1, 1), (1, 2),(2, 3), (3, 4)],
+        'clf__subestimator__estimator__clf2__C': [0.1, 1.0, 5.0],
     }
     
     cv = GridSearchCV(

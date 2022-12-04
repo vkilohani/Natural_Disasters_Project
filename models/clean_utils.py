@@ -10,7 +10,8 @@ from utils.custom_utils import full_data_path
 class Dict_Substitute(dict):
     def regex_compiler(self):
         return re.compile(
-                        r'\b'+r'\b|\b'.join(list(self.keys())) + r'\b')
+                        r'\b'+r'\b|\b'.join(list(self.keys())) + r'\b',
+                        re.IGNORECASE)
     
     def regex_translate(self, text):
         return re.sub(
@@ -38,12 +39,9 @@ def remove_punct(text):
 def remove_punct_series(pd_series):
     return pd_series.apply(remove_punct)
 
-
-
 def remove_digits(text):
     pattern = re.compile(r'\b\d+\b')
     return re.sub(pattern,'', text)
-
 
 def remove_digits_series(pd_series):
     pattern = re.compile(r'\b\d+\b')
@@ -69,6 +67,9 @@ def translate_chat_abbv_series(pd_series):
     chat_df = pd.read_csv(chat_csv_file, delimiter=';')
     
     chat_dict = dict(zip(chat_df["slang"], chat_df["full form"]))
+    #Special cases - adding by hand
+    chat_dict["\'ve"] = ""
+    chat_dict["S.O.S."] = "SOS"
     chat_dict = Dict_Substitute(chat_dict)
     
     return pd_series.map(chat_dict.regex_translate)
@@ -81,13 +82,15 @@ def spacy_lemmatize_series(pd_series):
         return ' '.join([token.lemma_ for token in nlp(text)])
     
     return pd_series.apply(spacy_lemmatize) 
+        
 
 def custom_cleanup(pd_series):
     
     #Perform cleanup
     
-    #Step 1: Replace URLs
+    #Step 1: Replace URLs & translate to english
     clean_series = replace_url_series(pd_series)
+    clean_series = translate_to_english_series(clean_series)
     
     #Step 2: Remove repeated letters from words if repeated>=3 times 
     # to 2 times

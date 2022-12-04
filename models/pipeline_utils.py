@@ -34,10 +34,9 @@ def tokenize(text):
     - tokenized string
     """
     tokens = word_tokenize(text)
-    lemmatizer = WordNetLemmatizer()
     clean_tokens = []
     for token in tokens:
-        clean_token = lemmatizer.lemmatize(token).lower().strip()
+        clean_token = token.lower().strip()
         clean_tokens.append(clean_token)
         
     return clean_tokens

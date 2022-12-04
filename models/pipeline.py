@@ -64,8 +64,8 @@ def build_model(output_categories, drop_cols):
       
     parameters = {
         'col_tfr__vect__ngram_range': [(1, 2), (2, 3), (2, 4)],
-        'clf__estimators__estimator__clf3__n_estimators': [100, 200],
-        'clf__estimators__estimator__clf1__C': [0.1, 1.0, 5.0],
+        #'clf__estimators__estimator__clf3__n_estimators': [100, 200],
+        #'clf__estimators__estimator__clf1__C': [0.1, 1.0, 5.0],
     }
     
     cv = GridSearchCV(

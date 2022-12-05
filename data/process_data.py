@@ -5,12 +5,18 @@ import pandas as pd
 from sqlalchemy import create_engine
 
 def load_data(messages_filepath, categories_filepath):
-    """Loads data from categories_filepath
-    args: 
-    - messages_filepath: name of csv file with messages
-    - categories_filename: name of csv file with categories
-    returns:
-    - dataframe obtained from merging the two csv files
+    """
+    Loads data from categories_filepath
+        Args:
+        ---- 
+            messages_filepath: str
+                name of csv file with messages
+            categories_filepath: str 
+                name of csv file with categories
+        Returns:
+        --------
+            df: pandas.DataFrame
+                dataframe obtained from merging the two input csv files
     """
     print("\nUsing", full_data_path(messages_filepath), 
           "and", 

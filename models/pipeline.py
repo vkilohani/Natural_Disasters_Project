@@ -18,10 +18,16 @@ from models.pipeline_utils import trivial, len_words, tokenize
 from models.clean_utils import custom_cleanup
 
 def build_model(output_categories, drop_cols):
-    """Function to build a model pipeline ending up in a gridsearch object
-    args: None
-    returns:
-    - grid search pipeline object
+    """
+    Function to build a model pipeline ending up in a gridsearch object.
+    
+        Args:
+        ----
+            No args.
+        Returns:
+        --------
+            cv: sklearn.model_selection.GridSearchCV 
+                gridsearch pipeline object
     """
     
     estimators = [('clf1', LogisticRegression(class_weight='balanced',

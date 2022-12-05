@@ -18,11 +18,17 @@ nltk.download(['punkt', 'wordnet', 'omw-1.4'])
 
 
 def load_data(database_filepath):
-    """Loads data from database_filepath
-    args: 
-    - database_filepath: name of disaster database
-    returns:
-    - X, y dataframe from the disaster database
+    """Loads data from database_filepath.
+    
+        Args:
+        ----- 
+            database_filepath: str
+                name of disaster database
+        
+        Returns:
+        --------
+            (X, y): a 2-tuple of dataframes
+                feature, labels from the disaster database
     """
     engine = create_engine('sqlite:///'
                            + full_data_path(database_filepath)
@@ -41,12 +47,16 @@ def load_data(database_filepath):
 
 
 def create_categories(y_df):
-    """Get a list of all categories and categories with missing classes
-    as a tuple
-    args:
-    - labels dataframe
-    returns:
-    - tuple: (all categories, labels with missing classes)
+    """Gets a tuple consisting of a list of all categories and a list of categories with the missing classes from the labels dataset.
+    
+        Args:
+        ----- 
+            y_df: dataframe
+                labels dataframe
+        Returns:
+        --------
+            (output_categories, drop_cols): (list, list)
+                (all categories, labels with missing classes)
     """
     unique_vals = y_df.nunique()
     output_categories = y_df.columns.values
@@ -58,13 +68,19 @@ def create_categories(y_df):
 
 def evaluate_model(model, X_df, y_df):
     """
-    Evaluate the model
-    args:
-    - feature dataframe
-    - labels dataframe
-    - model
-    returns: Nothing
-    Prints the evaluation of the model on the test set
+    Evaluates and pints the evaluation of the model on a test set.
+    
+        Args:
+        -----
+            model: sklearn.model_selection.GridSearchCV
+                trained model
+            X_df: pd.DataFrame
+                feature dataframe
+            y_df: pd.DataFrame
+                labels dataframe
+        Returns:
+        --------
+        No return value        
     """
     
     y_pred = model.predict(X_df).values
@@ -78,18 +94,37 @@ def evaluate_model(model, X_df, y_df):
         print(cf_report.split('\n')[3].split()[1:4])
 
 
-def save_model(model, model_filepath):
-    """Exports the model to a classifier pickle file
-    args: 
-    - model (to be exported)
-    - model_filepath (string)
-    returns: Nothing
+def save_model(model, filename):
+    """Exports the model to a classifier pickle file with a specified name.
+    
+        Args:
+        -----
+            model: sklearn.model_selection.GridSearchCV
+                trained model
+            filename: str
+                name of the pickle file
+                
+        Returns:
+        --------
+            No return value        
+
     """
-    joblib.dump(model, full_models_path(model_filepath))
+    joblib.dump(model, full_models_path(filename))
 
 
 
 def main():
+    """Loads the dataset. Builds the model. Trains and evaluates the 
+    model, and then saves it."
+    
+        Args:
+        -----
+            No args
+        
+        Returns:
+        --------
+            No return value           
+    """
     if len(sys.argv) == 3:
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))

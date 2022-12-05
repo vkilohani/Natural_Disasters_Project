@@ -9,9 +9,12 @@ Uncomment the following two lines if the packages are absent
 from nltk.stem import WordNetLemmatizer
 
 def len_words_text(text):
-   return len(tokenize(text))
+    "Returns the number of words in the input string."
+    return len(tokenize(text))
 
 def len_words(text_collection):
+    """Returns an array, reshaped as a two dimensional array, containing number of words in the entries of a list, numpy array or pandas series.
+    """
     if isinstance(text_collection, list):
         len_list = [len_words_text(x) for x in text_collection]
         return np.array(len_list).reshape(-1, 1)
@@ -23,15 +26,24 @@ def len_words(text_collection):
         return len_array.reshape(-1, 1)
     
 def trivial(text_series):
+    """Returns text_series (pandas.Series) as a reshaped two dimensional 
+    array.
+    """
     return np.array(text_series).reshape(-1, 1)
 
 def tokenize(text):
     """
-    Tokenizes the input string
-    args:
-    - string
-    returns:
-    - tokenized string
+    Tokenizes the input string into words and converts it to lowercase.
+    
+        Args:
+        -----
+            text: str
+                Text to be tokenized
+                
+        Returns:
+        --------
+            clean_tokens: list 
+                tokenized string
     """
     tokens = word_tokenize(text)
     clean_tokens = []

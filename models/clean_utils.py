@@ -4,7 +4,7 @@ import spacy
 import pandas as pd
 import string
 
-from utils.custom_utils import full_data_path
+from utils.path_utils import full_data_path
 
 class Dict_Substitute(dict):
     """
@@ -18,15 +18,17 @@ class Dict_Substitute(dict):
     Methods
     -------
     regex_compiler():
-        Returns a compiled regular expression based on the keys of the dictionary
+        Returns a compiled regular expression based on the keys of the 
+        dictionary.
         
     regex_translate(text):
         Translates text using the dictionary that was used to instantiate
-        the class
+        the class.
     """
     def regex_compiler(self):
         """
-        Returns a compiled regular expression based on the keys of the dictionary.
+        Returns a compiled regular expression based on the keys of the 
+        dictionary.
         """
         return re.compile(
                         r'\b'+r'\b|\b'.join(list(self.keys())) + r'\b',
@@ -44,7 +46,8 @@ class Dict_Substitute(dict):
             
             Returns:
             -------
-                    Translated text (str)
+                    str
+                        Translated text
         """
         return re.sub(
             self.regex_compiler(), lambda match: self[match.group(0)], text)
@@ -69,7 +72,8 @@ def remove_singles(text):
     return re.sub(pattern, '', text)
 
 def remove_singles_series(pd_series):
-    """Removes single letter words from text entries of pd_series (pandas.Series)."""
+    """Removes single letter words from text entries of pd_series 
+    (pandas.Series)."""
     
     return pd_series.apply(lambda x: remove_singles(x))
 
@@ -104,11 +108,15 @@ def replace_url(text):
     """Replaces url from text (str) by urlplaceholder.
     """
     
-    pattern = r'(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])'
+    group1 = '(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))'
+    group2 = '([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])'
+    my_str = group1+group2
+    pattern = my_str.encode('unicode_escape').decode()
     return re.sub(pattern, 'urlplaceholder', text)
 
 def replace_url_series(pd_series):
-    """Removes url from text entries in pd_series (pandas.Series) by urlplaceholder.
+    """Removes url from text entries in pd_series (pandas.Series) by 
+    urlplaceholder.
     """
     
     return pd_series.apply(replace_url)
@@ -125,7 +133,8 @@ def translate_to_english_series(pd_series):
     return pd_series.map(translate_to_english)
 
 def translate_chat_abbv_series(pd_series):
-    """Translates chat abbreviations in text entries (str) of a pandas series to formal english using data/chat_acronyms_list.csv.
+    """Translates chat abbreviations in text entries (str) of a pandas series 
+    to formal english using data/chat_acronyms_list.csv.
     """
     
     chat_csv_file = full_data_path('chat_acronyms_list.csv')

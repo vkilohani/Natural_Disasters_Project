@@ -27,11 +27,15 @@ model = joblib.load(model_filepath)
 @app.route('/')
 @app.route('/index')
 def index():
-    """Function renders the /templates/master.html template and shows some statistics of the data used for training in the flask app.
+    """Function renders the /templates/master.html template and shows some 
+    statistics of the data used for training in the flask app.
         
         Args:
         -----
-            No args.
+            No args
+        Returns:
+        --------
+            No return value
         """
     
     # extract data needed for visuals
@@ -112,7 +116,11 @@ def go():
     
         Args:
         -----
-            No args.
+            No args
+            
+        Returns:
+        --------
+            No return value
     """
 
     # save user input in query
@@ -136,7 +144,11 @@ def main():
     
         Args:
         -----
-            No args.
+            No args
+        
+        Returns:
+        --------
+            No return value
     """
     app.run(host='0.0.0.0', port=3000, debug=True)
 

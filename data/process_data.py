@@ -1,6 +1,6 @@
 import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from utils.custom_utils import full_data_path
+from utils.path_utils import full_data_path
 import pandas as pd
 from sqlalchemy import create_engine
 
@@ -30,17 +30,24 @@ def load_data(messages_filepath, categories_filepath):
     
     merge_columns = 'id' #Column(s) used for merging
     
-    df = messages_df.merge(categories_df, on = [merge_columns], how = 'left') #Merge the dataframes
+    #Merge the dataframes
+    df = messages_df.merge(categories_df, on = [merge_columns], how = 'left')
+     
     return df
 
 
 def clean_data(df):
     """Cleans the dataframe loaded by merging of messages and 
     categories files
-    args:
-    - dataframe
-    returns:
-    - cleaned dataframe
+    
+        Args:
+        -----
+            df: pandas.dataframe
+                dataframe to be cleaned
+        Returns:
+        --------
+            df: pandas.dataframe
+                cleaned dataframe
     """
     categories_df = df['categories'].str.split(pat = ';', expand=True)
     row0 = categories_df.iloc[0, :].values
@@ -62,7 +69,8 @@ def clean_data(df):
   
   
     for column in category_column_names:
-        df.drop(df[~df[column].isin([0, 1])].index, inplace=True) #Drop observations that are not properly binary classified
+        #Drop observations that are not properly binary classified
+        df.drop(df[~df[column].isin([0, 1])].index, inplace=True) 
         
     print("Number of observations in the cleaned up data:", len(df), "\n")
         
@@ -71,13 +79,10 @@ def clean_data(df):
 
 
 def save_data(df, database_filename):
-    """saves the dataframe to a sequel file in the ../data folder
-    args:
-    - dataframe
-    - name of the database file
-    
-    If the database file already exists, it will be overwritten
+    """Saves the dataframe to a sequel file as /data/database_filename.
+        If the database file already exists, it will be overwritten
     """
+ 
     engine = create_engine('sqlite:///'
                            + full_data_path(database_filename)
                            )
@@ -95,6 +100,18 @@ def save_data(df, database_filename):
 
 
 def main():
+    """
+    Loads the messages and categories csv files, merges, cleans and saves the
+    resulting data for data analysis.
+    
+        Args:
+        -----
+            No args
+                
+        Returns:
+        --------
+            No return value
+    """
     if len(sys.argv) == 4:
 
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]

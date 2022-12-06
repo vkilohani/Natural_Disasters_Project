@@ -1,6 +1,6 @@
 import sys, os, time, joblib
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from utils.custom_utils import full_data_path, full_models_path
+from utils.path_utils import full_data_path, full_models_path
 
 import numpy as np
 import pandas as pd
@@ -47,7 +47,8 @@ def load_data(database_filepath):
 
 
 def create_categories(y_df):
-    """Gets a tuple consisting of a list of all categories and a list of categories with the missing classes from the labels dataset.
+    """Gets a tuple consisting of a list of all categories and a list of 
+    categories with the missing classes from the labels dataset.
     
         Args:
         ----- 
@@ -129,7 +130,10 @@ def main():
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
         X_df, y_df = load_data(database_filepath)
-        X_train, X_test, y_train, y_test = train_test_split(X_df, y_df, test_size=0.2)
+        X_train, X_test, y_train, y_test = train_test_split(X_df, 
+                                                            y_df,
+                                                            test_size=0.2,
+                                                            random_state=42)
         
         output_categories, drop_cols = create_categories(y_df)
         

@@ -13,7 +13,8 @@ def len_words_text(text):
     return len(tokenize(text))
 
 def len_words(text_collection):
-    """Returns an array, reshaped as a two dimensional array, containing number of words in the entries of a list, numpy array or pandas series.
+    """Returns an array, reshaped as a two dimensional array, containing 
+    number of words in the entries of a list, numpy array or pandas series.
     """
     if isinstance(text_collection, list):
         len_list = [len_words_text(x) for x in text_collection]

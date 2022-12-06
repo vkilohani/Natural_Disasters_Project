@@ -60,8 +60,12 @@ class MyClassifier(BaseEstimator, ClassifierMixin):
         """
         
         y_pred_red = self.subestimator.predict(X)
-        df = pd.DataFrame(y_pred_red, index=np.arange(X.shape[0]), columns = self.keep_cols)
-        zero_df = pd.DataFrame(0, index=np.arange(X.shape[0]), columns=self.drop_cols)
+        df = pd.DataFrame(y_pred_red,
+                          index=np.arange(X.shape[0]),
+                          columns = self.keep_cols)
+        zero_df = pd.DataFrame(0,
+                               index=np.arange(X.shape[0]),
+                               columns=self.drop_cols)
         full_pred = pd.concat([df, zero_df], axis=1)
         full_pred = full_pred[self.output_categories]
         return full_pred

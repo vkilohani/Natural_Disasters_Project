@@ -12,6 +12,6 @@
 
 3. Run your web app: `python run.py`
 
-4. In the address bar in a browser type: 'localhost:3000'
+4. In the address bar in a browser type: `localhost:3000`
 
-5. Click the `Disaster Response Project` button to open the homepage. Type in a query for message classification and click 'Classify Message' button to see the classification results.
+5. Click the `Disaster Response Project` button to open the homepage. Type in a query for message classification and click `Classify Message` button to see the classification results.

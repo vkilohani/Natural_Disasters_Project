@@ -168,7 +168,7 @@ def custom_cleanup(pd_series):
     """
     Performs custom cleanup of pd_series (pandas.Series).
         - URLSs will be replaced by urlplaceholder.
-        - Repeated consecutive letters will be reduced to 2.
+        - Repeated consecutive letters will be reduced to a maximum of 2.
         - Spacy Lemmatization will be performed.
         - Single letter words will be removed.
         - Chat Abbreviations will be translated to formal english.

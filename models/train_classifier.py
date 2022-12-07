@@ -90,9 +90,9 @@ def evaluate_model(model, X_df, y_df):
     
     for i in range(y_actual.shape[1]):
         cf_report = classification_report(y_actual[:,i] , y_pred[:,i])
-        metrics_col = cf_report
         print(output_categories[i], ":\n")
-        print(cf_report.split('\n')[3].split()[1:4])
+        print(cf_report) 
+        #Append .split('\n')[3].split()[1:4] to cf_report for a shorter view
 
 
 def save_model(model, filename):

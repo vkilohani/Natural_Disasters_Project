@@ -31,9 +31,11 @@ The project directory looks like this:
 ```zsh
 .
 ├── README.md
+├── References.md
 ├── app
 │   ├── run.py
 │   └── templates
+│       ├── example.png
 │       ├── go.html
 │       └── master.html
 ├── data
@@ -42,17 +44,13 @@ The project directory looks like this:
 │   ├── disaster_categories.csv
 │   ├── disaster_messages.csv
 │   └── process_data.py
-├── exp_mlp.ipynb
 ├── models
 │   ├── classifier.pkl
-│   ├── classifier_new.pkl
 │   ├── clean_utils.py
 │   ├── custom_classifier.py
 │   ├── pipeline.py
 │   ├── pipeline_utils.py
 │   └── train_classifier.py
-├── new_mlp.ipynb
-├── pipeline-exp.ipynb
 └── utils
     └── path_utils.py
 ```
